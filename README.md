@@ -7,7 +7,7 @@
 
 > The IoT module was added in the open <a href="https://github.com/jclizar/flutter_IoT_nodeMCUrobot/blob/main/arduino/firmware_dibop.ino">source code</a> using <a href="https://www.arduino.cc/en/software">Arduino IDE</a>.
 
-Project details
+<h4>Project details</h4>
 
 * <a href="https://trello.com/">Trello</a> Agile Kanban Board for management
 * UI design performed with <a href="https://www.figma.com">Figma</a>
@@ -17,15 +17,15 @@ Project details
     * Front End: <a href="https://github.com/jclizar/flutter_IoT_nodeMCUrobot/blob/main/rules/FlutterProjetoPratico_parte01_fatec.pdf">Part 1</a>
     * Back End: Part 2 
 
-<!--
-# YouTube video
-<div align=left
->
-Front End Design Back End integration
 
- [![Youtube Badge](https://img.shields.io/badge/-FrontEnd-red?style=flat-square&logo=Youtube&logoColor=white&link=https://www.youtube.com)](https://www.youtube.com) 
- 
- </div>-->
+# YouTube video
+
+Part 1 - Front End Design
+
+<div align=center>
+ <a href="https://www.youtube.com/watch?v=Wgah693r-As"><img src="previewYT.JPG" width="90%">
+ </a>
+ </div>
 
 # Subfolder 
 
