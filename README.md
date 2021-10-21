@@ -23,7 +23,7 @@
 Part 1 - Front End Design
 
 <div align=center>
- <a href="https://www.youtube.com/watch?v=Wgah693r-As"><img src="previewYT.JPG" width="90%">
+ <a href="https://www.youtube.com/watch?v=Wgah693r-As"><img src="previewYT.JPG">
  </a>
  </div>
 
