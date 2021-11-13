@@ -31,6 +31,8 @@ Widget inputText(
   Color focusColor,
   TextEditingController textController, {
   Color borderColor = Colors.white,
+  String? Function(String?)? validator,
+  bool isPassword = false,
 }) {
   return Expanded(
     child: Container(
@@ -52,10 +54,24 @@ Widget inputText(
               width: 2.0,
             ),
           ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(
+              color: Colors.red,
+              width: 2.0,
+            ),
+          ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(25),
             borderSide: BorderSide(
               color: focusColor,
+              width: 2.0,
+            ),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(
+              color: Colors.red,
               width: 2.0,
             ),
           ),
@@ -64,6 +80,10 @@ Widget inputText(
             color: Colors.black,
           ),
         ),
+        validator: validator,
+        obscureText: isPassword,
+        enableSuggestions: !isPassword,
+        autocorrect: !isPassword,
       ),
     ),
   );

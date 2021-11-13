@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'widgets/widget_login_signup.dart';
 import 'widgets/widget_utilities.dart';
@@ -27,16 +29,47 @@ class _SignUpState extends State<SignUp> {
   }
 
   Widget formSignUp(BuildContext context, Color textColor) {
-    void menuButton() {
-      Navigator.pushNamedAndRemoveUntil(context, 'menu', (r) => false);
-    }
-
     var name = TextEditingController();
     var email = TextEditingController();
     var password = TextEditingController();
     var confirmPassword = TextEditingController();
 
     var formKey = GlobalKey<FormState>();
+
+    //
+    // CRIAR CONTA no Firebase Auth
+    //
+    void signup() {
+      if (formKey.currentState!.validate()) {
+        FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+          email: email.text,
+          password: password.text,
+        )
+            .then((value) {
+          if (name.text.isNotEmpty) {
+            FirebaseFirestore.instance.collection('users').add({
+              'email': email.text,
+              'name': name.text,
+            });
+          }
+          Navigator.pushNamedAndRemoveUntil(context, 'menu', (r) => false);
+        }).catchError((erro) {
+          String message = "";
+          if (erro.code == 'email-already-in-use') {
+            message = 'ERRO: O email informado já está em uso.';
+          } else {
+            message = 'ERRO: ${erro.message}';
+          }
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(message),
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        });
+      }
+    }
 
     return Expanded(
       child: Form(
@@ -58,18 +91,57 @@ class _SignUpState extends State<SignUp> {
                         Row(
                           children: [
                             inputText(
-                                'E-mail', 'email@email.com', textColor, email),
+                              'E-mail',
+                              'email@email.com',
+                              textColor,
+                              email,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'The email field is required';
+                                }
+
+                                return null;
+                              },
+                            ),
                           ],
                         ),
                         Row(
                           children: [
-                            inputText('Password', '', textColor, password),
+                            inputText(
+                              'Password',
+                              '',
+                              textColor,
+                              password,
+                              isPassword: true,
+                              validator: (value) {
+                                if (value!.length < 8) {
+                                  return 'The minimal password length is 8';
+                                }
+                                return null;
+                              },
+                            ),
                           ],
                         ),
                         Row(
                           children: [
-                            inputText('Confirm Password', '', textColor,
-                                confirmPassword),
+                            inputText(
+                              'Confirm Password',
+                              '',
+                              textColor,
+                              confirmPassword,
+                              isPassword: true,
+                              validator: (value) {
+                                if (value!.length < 8) {
+                                  return 'The minimal password length is 8';
+                                }
+
+                                if (value != password.text) {
+                                  return 'The field Password and Confirm Password need to be equal';
+                                }
+
+                                return null;
+                              },
+                            ),
                           ],
                         ),
                         Row(
@@ -102,7 +174,7 @@ class _SignUpState extends State<SignUp> {
                 Expanded(
                   child: Container(
                     margin: EdgeInsets.symmetric(horizontal: 17.5.w),
-                    child: botao("sign up", menuButton),
+                    child: botao("sign up", signup),
                   ),
                 ),
               ],

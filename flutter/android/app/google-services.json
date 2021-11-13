@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "979132995326",
+    "project_id": "flutter-iot-mcurobot",
+    "storage_bucket": "flutter-iot-mcurobot.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:979132995326:android:b9fd460ff668ba9f46b7af",
+        "android_client_info": {
+          "package_name": "com.example.mqtt_dibop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "979132995326-anu7bvr3odm5fb3u709b4i14g4it8u1v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVh2IBSUXOAtckH2QyJfD5__l_uTwXG38"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "979132995326-anu7bvr3odm5fb3u709b4i14g4it8u1v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
