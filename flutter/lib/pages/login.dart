@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'widgets/widget_login_signup.dart';
 import 'widgets/widget_utilities.dart';
@@ -27,17 +28,30 @@ class _LoginState extends State<Login> {
   }
 
   Widget formLogin(Color textColor) {
-    void menuButton() {
-      Navigator.pushNamedAndRemoveUntil(context, 'menu', (r) => false);
-    }
-
     final fontColor = Theme.of(context).colorScheme.blue;
     final backgroundColor = Theme.of(context).colorScheme.orange;
 
-    var email = TextEditingController();
-    var password = TextEditingController();
+    TextEditingController email = TextEditingController();
+    TextEditingController password = TextEditingController();
 
     var formKey = GlobalKey<FormState>();
+
+    //
+    // LOGIN com Firebase Auth
+    //
+    void login() {
+      FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: email.text, password: password.text)
+          .then((value) {
+        print(value);
+        Navigator.pushNamedAndRemoveUntil(context, 'menu', (r) => false);
+      }).catchError((erro) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('ERRO: Usuário não encontrado'),
+            duration: const Duration(seconds: 2)));
+      });
+    }
 
     return Expanded(
       child: Form(
@@ -55,13 +69,23 @@ class _LoginState extends State<Login> {
                         children: [
                           Row(
                             children: [
-                              inputText('E-mail', 'email@email.com', textColor,
-                                  email),
+                              inputText(
+                                'E-mail',
+                                'email@email.com',
+                                textColor,
+                                email,
+                              ),
                             ],
                           ),
                           Row(
                             children: [
-                              inputText('Password', '', textColor, password),
+                              inputText(
+                                'Password',
+                                '',
+                                textColor,
+                                password,
+                                isPassword: true,
+                              ),
                             ],
                           ),
                           Row(
@@ -99,7 +123,7 @@ class _LoginState extends State<Login> {
                       margin: EdgeInsets.symmetric(horizontal: 17.5.w),
                       child: botao(
                         "login",
-                        menuButton,
+                        login,
                         fontColor: fontColor,
                         backgroundColor: backgroundColor,
                       ),
