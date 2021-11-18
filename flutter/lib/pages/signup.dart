@@ -48,7 +48,7 @@ class _SignUpState extends State<SignUp> {
         )
             .then((value) {
           if (name.text.isNotEmpty) {
-            FirebaseFirestore.instance.collection('users').add({
+            FirebaseFirestore.instance.collection('usuarios').add({
               'email': email.text,
               'name': name.text,
             });
