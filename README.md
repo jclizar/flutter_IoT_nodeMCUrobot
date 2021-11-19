@@ -15,7 +15,7 @@
 * <a href="https://mosquitto.org/">Eclipse Mosquitto™</a> MQTT Broker
 * Rules
     * Front End: <a href="https://github.com/jclizar/flutter_IoT_nodeMCUrobot/blob/main/rules/FlutterProjetoPratico_parte01_fatec.pdf">Part 1</a>
-    * Back End: Part 2 
+    * Back End: <a href="https://github.com/jclizar/flutter_IoT_nodeMCUrobot/blob/main/rules/FlutterProjetoPratico_parte02_fatec.pdf">Part 2</a>
 
 
 # YouTube video
