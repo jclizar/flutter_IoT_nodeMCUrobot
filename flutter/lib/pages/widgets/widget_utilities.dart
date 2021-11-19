@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:mqtt_dibop/theme.dart';
+import 'package:mqtt_dibop/controller/mqttServer.dart';
 
 Widget botao(
   String rotulo,
@@ -515,5 +516,37 @@ Widget controlButton(Widget label, Function() onPressed,
         ),
       ),
     ),
+  );
+}
+
+Widget connectMqttServe(Widget screen) {
+  return FutureBuilder<int>(
+    future: MqttServer.connect(),
+    builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+      if (snapshot.hasError) {
+        return Container(
+          child: Row(
+            children: [
+              const Icon(
+                Icons.error_outline,
+                color: Colors.red,
+              ),
+              Text('Error: ${snapshot.error}')
+            ],
+          ),
+        );
+      }
+      if (snapshot.hasData) {
+        return screen;
+      }
+
+      return Container(
+        width: 100.w,
+        height: 100.h,
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    },
   );
 }

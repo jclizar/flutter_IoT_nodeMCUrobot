@@ -3,6 +3,7 @@ import 'widgets/widget_utilities.dart';
 import 'package:sizer/sizer.dart';
 import 'package:mqtt_dibop/theme.dart';
 import 'package:mqtt_dibop/controller/publishItem.dart';
+import 'package:mqtt_dibop/controller/mqttServer.dart';
 
 class Publish extends StatefulWidget {
   const Publish({Key? key}) : super(key: key);
@@ -14,9 +15,21 @@ class Publish extends StatefulWidget {
 class _PublishState extends State<Publish> {
   List<PublishItem> publishList = <PublishItem>[];
 
-  void addPublishItem(int value) {
+  Future<void> addPublishItem(int value) async {
+    bool status;
+
+    try {
+      int message = await MqttServer.publish(value.toString());
+      print(message);
+      status = message == value;
+      // ignore: unused_catch_clause
+    } on Exception catch (e) {
+      status = false;
+    }
+
+    PublishItem publishItem = new PublishItem(value, sendStatus: status);
+
     setState(() {
-      PublishItem publishItem = new PublishItem(value);
       publishList.add(publishItem);
     });
   }
@@ -24,7 +37,7 @@ class _PublishState extends State<Publish> {
   @override
   Widget build(BuildContext context) {
     return MainScaffold(
-      publish(),
+      connectMqttServe(publish()),
       "Publish",
       onPressed: () {
         showDialog(

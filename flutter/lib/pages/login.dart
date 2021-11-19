@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'widgets/widget_login_signup.dart';
 import 'widgets/widget_utilities.dart';
@@ -13,6 +14,15 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  @override
+  void initState() {
+    super.initState();
+    Firebase.initializeApp().whenComplete(() {
+      print("completed");
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final logoColor = Theme.of(context).colorScheme.orange;
