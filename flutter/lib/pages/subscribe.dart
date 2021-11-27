@@ -18,9 +18,9 @@ class _SubscribeState extends State<Subscribe> {
 
   @override
   void initState() {
-    publishList.add(PublishItem(2, sendStatus: true));
-    publishList.add(PublishItem(3, sendStatus: false));
-    publishList.add(PublishItem(8));
+    publishList.add(PublishItem(2, true));
+    publishList.add(PublishItem(3, false));
+    publishList.add(PublishItem(8, true));
     super.initState();
   }
 

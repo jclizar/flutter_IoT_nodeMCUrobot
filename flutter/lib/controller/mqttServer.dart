@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:mqtt_dibop/controller/subscribItem.dart';
 
 class MqttServer {
   static String broker = "mqtt.eclipseprojects.io";
@@ -23,7 +25,6 @@ class MqttServer {
         MqttDisconnectionOrigin.solicited) {
       print('EXAMPLE::OnDisconnected callback is solicited, this is correct');
     }
-    exit(-1);
   }
 
   /// The successful connect callback
@@ -108,13 +109,13 @@ class MqttServer {
       print(
           'EXAMPLE::ERROR Mosquitto client connection failed - disconnecting, status is ${client.connectionStatus}');
       client.disconnect();
-      exit(-1);
     }
 
     /// Ok, lets try a subscription
     // print('EXAMPLE::Subscribing to the test/lol topic');
     // const topic = 'test/lol'; // Not a wildcard topic
     // client.subscribe(topic, MqttQos.atMostOnce);
+    client.subscribe(mainTopic, MqttQos.atMostOnce);
 
     /// The client has a change notifier object(see the Observable class) which we then listen to to get
     /// notifications of published updates to each subscribed topic.
@@ -131,6 +132,14 @@ class MqttServer {
       print(
           'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
       print('');
+
+      int value = int.parse(pt);
+
+      SubscriptionItem subscriptionItem = new SubscriptionItem("", value);
+
+      FirebaseFirestore.instance
+          .collection('subscription')
+          .add(subscriptionItem.getMapValues());
     });
 
     /// If needed you can listen for published messages that have completed the publishing
