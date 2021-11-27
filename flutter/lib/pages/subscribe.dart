@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'widgets/widget_utilities.dart';
 import 'package:sizer/sizer.dart';
 import 'package:mqtt_dibop/theme.dart';
-import 'package:mqtt_dibop/controller/publishItem.dart';
+import 'package:mqtt_dibop/controller/subscribItem.dart';
+import 'package:mqtt_dibop/controller/utils.dart';
 
 class Subscribe extends StatefulWidget {
   const Subscribe({Key? key}) : super(key: key);
@@ -12,45 +14,102 @@ class Subscribe extends StatefulWidget {
 }
 
 class _SubscribeState extends State<Subscribe> {
-  List<PublishItem> publishList = <PublishItem>[];
+  @override
+  Widget build(BuildContext context) {
+    return MainScaffold(
+      connectMqttServe(new SubscribeList()),
+      "Subscribe",
+    );
+  }
+}
 
-  List<PublishItem> removeList = <PublishItem>[];
+class SubscribeList extends StatefulWidget {
+  const SubscribeList({Key? key}) : super(key: key);
+
+  @override
+  _SubscribeListState createState() => _SubscribeListState();
+}
+
+class _SubscribeListState extends State<SubscribeList> {
+  // Referenciar a Coleção de Cafés
+  late CollectionReference subscribeList;
+
+  List<String> removeListIds = <String>[];
 
   @override
   void initState() {
-    publishList.add(PublishItem(2, true));
-    publishList.add(PublishItem(3, false));
-    publishList.add(PublishItem(8, true));
     super.initState();
+    subscribeList = FirebaseFirestore.instance.collection('subscription');
   }
 
   void removeItemfromPublishList() {
-    int countRemovedItems = removeList.length;
+    if (removeListIds.length == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("No items has been remove"),
+        duration: Duration(seconds: 2),
+      ));
+    }
+
+    for (String id in removeListIds) {
+      subscribeList.doc(id).delete().then((value) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Items removed"),
+          duration: Duration(seconds: 2),
+        ));
+      }).catchError((onError) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Erro to remove some items"),
+          duration: Duration(seconds: 2),
+        ));
+      });
+    }
 
     setState(() {
-      publishList.removeWhere((element) => removeList.contains(element));
-      removeList = [];
+      removeListIds = [];
     });
+  }
 
-    String msg = countRemovedItems == 0
-        ? "No items has been remove"
-        : "$countRemovedItems items removed";
+  Widget itemLista(item) {
+    var data = item.data();
 
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(msg),
-      duration: Duration(seconds: 2),
-    ));
+    SubscriptionItem subscriptionItem = new SubscriptionItem(
+      data['publish_id'],
+      data['value'],
+      created: data['created_at'],
+    );
+
+    String publishStatus =
+        subscriptionItem.publishId.isNotEmpty ? "(SEND)" : "(ERROR)";
+
+    String title = "${subscriptionItem.getName()} $publishStatus";
+
+    return Card(
+      elevation: 1,
+      shadowColor: Theme.of(context).colorScheme.blue,
+      child: ListTile(
+        title: Text(
+          title,
+          style: TextStyle(fontSize: 10.sp),
+        ),
+
+        subtitle: Text(getDateFormat(subscriptionItem.created)),
+
+        //selecionar item da lista
+        hoverColor: Colors.blue.shade100,
+        trailing: new CheckBox(
+          checkEvent: () {
+            removeListIds.add(item.id);
+          },
+          uncheckEvent: () {
+            removeListIds.remove(item.id);
+          },
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return MainScaffold(
-      subscribe(),
-      "Subscribe",
-    );
-  }
-
-  Widget subscribe() {
     final Color titlecolor = Theme.of(context).colorScheme.blue;
 
     return Container(
@@ -71,10 +130,7 @@ class _SubscribeState extends State<Subscribe> {
                 child: Container(
                   margin: EdgeInsets.only(bottom: 4.h),
                   child: Text(
-                    publishList
-                        .where((element) => element.sendStatus == false)
-                        .length
-                        .toString(),
+                    '0',
                     style: TextStyle(fontSize: 10.sp),
                   ),
                 ),
@@ -90,46 +146,31 @@ class _SubscribeState extends State<Subscribe> {
             ],
           ),
           Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: publishList.length,
-              itemBuilder: (context, index) {
-                PublishItem item = publishList[index];
-                String publishStatus = '';
-
-                if (item.sendStatus == true) {
-                  publishStatus = "(SENT)";
-                }
-
-                if (item.sendStatus == false) {
-                  publishStatus = "(ERROR)";
-                }
-
-                String title = "${item.getName()} $publishStatus";
-
-                return Card(
-                  elevation: 1,
-                  shadowColor: Theme.of(context).colorScheme.blue,
-                  child: ListTile(
-                    title: Text(
-                      title,
-                      style: TextStyle(fontSize: 10.sp),
-                    ),
-
-                    subtitle: Text(item.created.toString()),
-
-                    //selecionar item da lista
-                    hoverColor: Colors.blue.shade100,
-                    trailing: new CheckBox(
-                      checkEvent: () {
-                        removeList.add(item);
+            child: StreamBuilder<QuerySnapshot>(
+              //fonte de dados (coleção)
+              stream: subscribeList.snapshots(),
+              //exibir os dados retornados
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                    return const Center(
+                      child: Text('Não foi possível conectar ao Firebase'),
+                    );
+                  case ConnectionState.waiting:
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  default:
+                    final dados = snapshot.requireData.docs.toList();
+                    dados.sort((a, b) =>
+                        a['created_at'].compareTo(b['created_at']) * -1);
+                    return ListView.builder(
+                      itemCount: dados.length,
+                      itemBuilder: (context, index) {
+                        return itemLista(dados[index]);
                       },
-                      uncheckEvent: () {
-                        removeList.remove(item);
-                      },
-                    ),
-                  ),
-                );
+                    );
+                }
               },
             ),
           ),

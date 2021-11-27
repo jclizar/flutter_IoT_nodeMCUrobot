@@ -5,12 +5,7 @@ import 'package:sizer/sizer.dart';
 import 'package:mqtt_dibop/theme.dart';
 import 'package:mqtt_dibop/controller/publishItem.dart';
 import 'package:mqtt_dibop/controller/mqttServer.dart';
-import 'package:intl/intl.dart';
-
-String getDateFormat(Timestamp timeStamp) {
-  final DateFormat formatter = DateFormat('dd/MM/yyyy');
-  return formatter.format(timeStamp.toDate());
-}
+import 'package:mqtt_dibop/controller/utils.dart';
 
 class Publish extends StatefulWidget {
   const Publish({Key? key}) : super(key: key);
@@ -176,11 +171,13 @@ class _PublishListState extends State<PublishList> {
                       child: CircularProgressIndicator(),
                     );
                   default:
-                    final dados = snapshot.requireData;
+                    final dados = snapshot.requireData.docs.toList();
+                    dados.sort((a, b) =>
+                        a['created_at'].compareTo(b['created_at']) * -1);
                     return ListView.builder(
-                      itemCount: dados.size,
+                      itemCount: dados.length,
                       itemBuilder: (context, index) {
-                        return itemLista(dados.docs[index]);
+                        return itemLista(dados[index]);
                       },
                     );
                 }
