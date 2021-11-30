@@ -1,48 +1,50 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+Map<String, int> _movements = {
+  "Standby": 1,
+  "Forward": 2,
+  "Backward": 3,
+  "Left shift": 4,
+  "Right shift": 5,
+  "Turn left": 6,
+  "Turn Right": 7,
+  "Lay Down": 8,
+  "Say Hi": 9,
+  "Fighting": 10,
+  "Push up": 11,
+  "Sleep": 12,
+  "Dance1": 13,
+  "Dance2": 14,
+  "Dance3": 15,
+};
+
 class MqttItem {
   int value;
   late Timestamp created;
 
   String getName() {
-    switch (this.value) {
-      case 1:
-        return "Standby";
-      case 2:
-        return "Forward";
-      case 3:
-        return "Backward";
-      case 4:
-        return "Left shift";
-      case 5:
-        return "Right shift";
-      case 6:
-        return "Turn left";
-      case 7:
-        return "Turn Right";
-      case 8:
-        return "Lie";
-      case 9:
-        return "Say Hi";
-      case 10:
-        return "Fighting";
-      case 11:
-        return "Push up";
-      case 12:
-        return "Sleep";
-      case 13:
-        return "Dance1";
-      case 14:
-        return "Dance2";
-      case 15:
-        return "Dance3";
-      default:
-        throw new Exception("No value named");
+    String? name = MqttItem.getMovementName(this.value);
+
+    if (name == null) {
+      throw new Exception("No value named");
     }
+
+    return name;
   }
 
   void getMapValues() {
     new Exception('$this.runtimeType need to implement getMapValues');
+  }
+
+  static String? getMovementName(int value) {
+    String? name;
+    _movements.forEach((key, value) {
+      if (value == value) {
+        name = key;
+      }
+    });
+
+    return name;
   }
 
   MqttItem(this.value, {Timestamp? created}) {

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mqtt_dibop/controller/publishItem.dart';
 import 'package:sizer/sizer.dart';
 import 'package:mqtt_dibop/theme.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
 import 'widgets/widget_utilities.dart';
+import 'package:mqtt_dibop/controller/mqttServer.dart';
 import 'dart:math' as math;
 
 class Control extends StatefulWidget {
@@ -31,6 +33,7 @@ class _ControlState extends State<Control> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    MqttServer.disconect();
     super.dispose();
   }
 
@@ -40,7 +43,7 @@ class _ControlState extends State<Control> {
     final String backgroundImg = 'lib/images/background_controller.svg';
 
     // Stack Widget: https://medium.com/flutterdevs/stack-and-positioned-widget-in-flutter-3d1a7b30b09a
-    return Stack(
+    return connectMqttServe(Stack(
       children: [
         Container(
           padding: EdgeInsets.fromLTRB(
@@ -62,7 +65,9 @@ class _ControlState extends State<Control> {
           left: 60.8.h,
           child: controlButton(
             Text('1'),
-            () {},
+            () {
+              PublishItem.publishValue(13);
+            },
             width: 5.328125.h,
             height: 9.472222222.w,
             backgroundColor: Theme.of(context).colorScheme.orange,
@@ -74,7 +79,9 @@ class _ControlState extends State<Control> {
           left: 81.7.h,
           child: controlButton(
             Text('2'),
-            () {},
+            () {
+              PublishItem.publishValue(14);
+            },
             width: 5.328125.h,
             height: 9.472222222.w,
             backgroundColor: Theme.of(context).colorScheme.orange,
@@ -86,7 +93,9 @@ class _ControlState extends State<Control> {
           left: 81.7.h,
           child: controlButton(
             Text('3'),
-            () {},
+            () {
+              PublishItem.publishValue(15);
+            },
             width: 5.328125.h,
             height: 9.472222222.w,
             backgroundColor: Theme.of(context).colorScheme.orange,
@@ -98,7 +107,9 @@ class _ControlState extends State<Control> {
           left: 70.5.h,
           child: controlButton(
             Text('P'),
-            () {},
+            () {
+              PublishItem.publishValue(11);
+            },
             width: 7.265625.h,
             height: 12.916666667.w,
             backgroundColor: Theme.of(context).colorScheme.blue,
@@ -110,7 +121,9 @@ class _ControlState extends State<Control> {
           left: 70.5.h,
           child: controlButton(
             Text('F'),
-            () {},
+            () {
+              PublishItem.publishValue(10);
+            },
             width: 7.265625.h,
             height: 12.916666667.w,
             backgroundColor: Theme.of(context).colorScheme.blue,
@@ -122,7 +135,9 @@ class _ControlState extends State<Control> {
           left: 63.5.h,
           child: controlButton(
             Text('H'),
-            () {},
+            () {
+              PublishItem.publishValue(9);
+            },
             width: 7.265625.h,
             height: 12.916666667.w,
             backgroundColor: Theme.of(context).colorScheme.blue,
@@ -134,7 +149,9 @@ class _ControlState extends State<Control> {
           left: 77.3.h,
           child: controlButton(
             Text('L'),
-            () {},
+            () {
+              PublishItem.publishValue(8);
+            },
             width: 7.265625.h,
             height: 12.916666667.w,
             backgroundColor: Theme.of(context).colorScheme.blue,
@@ -146,7 +163,9 @@ class _ControlState extends State<Control> {
           left: 19.h,
           child: controlButton(
             Text('L'),
-            () {},
+            () {
+              PublishItem.publishValue(6);
+            },
             width: 15.h,
             height: 12.916666667.w,
             fontColor: Colors.black,
@@ -158,7 +177,9 @@ class _ControlState extends State<Control> {
           left: 66.40625.h,
           child: controlButton(
             Text('R'),
-            () {},
+            () {
+              PublishItem.publishValue(7);
+            },
             width: 15.h,
             height: 12.916666667.w,
             fontColor: Colors.black,
@@ -170,7 +191,9 @@ class _ControlState extends State<Control> {
           left: 43.h,
           child: controlButton(
             Text(''),
-            () {},
+            () {
+              PublishItem.publishValue(1);
+            },
             width: 6.296875.h,
             height: 4.305555556.w,
             backgroundColor: Colors.black,
@@ -181,7 +204,9 @@ class _ControlState extends State<Control> {
           left: 52.7.h,
           child: controlButton(
             Text(''),
-            () {},
+            () {
+              PublishItem.publishValue(12);
+            },
             width: 6.296875.h,
             height: 4.305555556.w,
             backgroundColor: Colors.black,
@@ -196,7 +221,9 @@ class _ControlState extends State<Control> {
               textDirection: TextDirection.ltr,
               size: 12.5.w,
             ),
-            () {},
+            () {
+              PublishItem.publishValue(5);
+            },
             width: 7.265625.h,
             height: 11.194444444.w,
             backgroundColor: Colors.black,
@@ -215,7 +242,9 @@ class _ControlState extends State<Control> {
                 size: 12.5.w,
               ),
             ),
-            () {},
+            () {
+              PublishItem.publishValue(3);
+            },
             width: 11.194444444.w,
             height: 7.265625.h,
             backgroundColor: Colors.black,
@@ -233,7 +262,9 @@ class _ControlState extends State<Control> {
                 size: 12.5.w,
               ),
             ),
-            () {},
+            () {
+              PublishItem.publishValue(4);
+            },
             width: 7.265625.h,
             height: 11.194444444.w,
             backgroundColor: Colors.black,
@@ -252,7 +283,9 @@ class _ControlState extends State<Control> {
                 size: 12.5.w,
               ),
             ),
-            () {},
+            () {
+              PublishItem.publishValue(2);
+            },
             width: 11.194444444.w,
             height: 7.265625.h,
             backgroundColor: Colors.black,
@@ -280,6 +313,6 @@ class _ControlState extends State<Control> {
           ),
         ),
       ],
-    );
+    ));
   }
 }

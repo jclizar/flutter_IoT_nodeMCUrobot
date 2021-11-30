@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:mqtt_dibop/controller/mqttServer.dart';
 import 'widgets/widget_utilities.dart';
 import 'package:sizer/sizer.dart';
 import 'package:mqtt_dibop/theme.dart';
@@ -37,32 +38,39 @@ class _SubscribeListState extends State<SubscribeList> {
   List<String> removeListIds = <String>[];
 
   @override
+  dispose() {
+    MqttServer.disconect();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
     subscribeList = FirebaseFirestore.instance.collection('subscription');
   }
 
   void removeItemfromPublishList() {
-    if (removeListIds.length == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("No items has been remove"),
-        duration: Duration(seconds: 2),
-      ));
-    }
+    String msg = "No items has been remove";
+    int countRemoveItem = 0;
 
     for (String id in removeListIds) {
       subscribeList.doc(id).delete().then((value) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Items removed"),
-          duration: Duration(seconds: 2),
-        ));
-      }).catchError((onError) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Erro to remove some items"),
-          duration: Duration(seconds: 2),
-        ));
+        ++countRemoveItem;
       });
     }
+
+    if (countRemoveItem != 0 && countRemoveItem < removeListIds.length) {
+      msg = "Erro to remove some items, $countRemoveItem is removed";
+    }
+
+    if (countRemoveItem != 0) {
+      msg = "Items removed";
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(msg),
+      duration: Duration(seconds: 2),
+    ));
 
     setState(() {
       removeListIds = [];

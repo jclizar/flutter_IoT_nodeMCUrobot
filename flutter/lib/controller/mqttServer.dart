@@ -159,4 +159,8 @@ class MqttServer {
     return client.publishMessage(
         mainTopic, MqttQos.exactlyOnce, builder.payload!);
   }
+
+  static disconect() {
+    client.disconnect();
+  }
 }

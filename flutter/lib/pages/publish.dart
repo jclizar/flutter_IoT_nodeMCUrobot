@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:mqtt_dibop/controller/mqttServer.dart';
 import 'widgets/widget_utilities.dart';
 import 'package:sizer/sizer.dart';
 import 'package:mqtt_dibop/theme.dart';
 import 'package:mqtt_dibop/controller/publishItem.dart';
-import 'package:mqtt_dibop/controller/mqttServer.dart';
 import 'package:mqtt_dibop/controller/utils.dart';
 
 class Publish extends StatefulWidget {
@@ -17,25 +17,10 @@ class Publish extends StatefulWidget {
 class _PublishState extends State<Publish> {
   List<PublishItem> publishList = <PublishItem>[];
 
-  Future<void> addPublishItem(int value) async {
-    bool status;
-    PublishItem publishItem;
-
-    try {
-      int newMovement = await MqttServer.publish(value.toString());
-
-      status = newMovement == value;
-      publishItem = new PublishItem(value, status);
-    } on Exception catch (e) {
-      publishItem = new PublishItem(value, false);
-      publishItem.setErrorMessage(e.toString());
-    }
-
-    FirebaseFirestore.instance
-        .collection('publish')
-        .add(publishItem.getMapValues())
-        .then((value) {})
-        .catchError((onError) {});
+  @override
+  dispose() {
+    MqttServer.disconect();
+    super.dispose();
   }
 
   @override
@@ -48,7 +33,7 @@ class _PublishState extends State<Publish> {
             context: context,
             builder: (context) {
               return new PublishListWidget(
-                addPublishItem,
+                PublishItem.publishValue,
               );
             });
       },
