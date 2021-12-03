@@ -13,14 +13,18 @@
 * UI design performed with <a href="https://www.figma.com">Figma</a>
 *  <a href="https://code.visualstudio.com/learn/collaboration/live-share">Live Share</a> code collaboration
 * <a href="https://mosquitto.org/">Eclipse Mosquitto™</a> MQTT Broker
+* <a hre="https://firebase.google.com/">Firebase</a> Services
+    * Firebase Authentication
+    * Cloud Firestore
 * Rules
     * Front End: <a href="https://github.com/jclizar/flutter_IoT_nodeMCUrobot/blob/main/rules/FlutterProjetoPratico_parte01_fatec.pdf">Part 1</a>
     * Back End: <a href="https://github.com/jclizar/flutter_IoT_nodeMCUrobot/blob/main/rules/FlutterProjetoPratico_parte02_fatec.pdf">Part 2</a>
+* <a href="https://github.com/jclizar/flutter_IoT_nodeMCUrobot/blob/main/relTecn/RelatorioTecnicoFlutter.pdf">Technical Report</a>
 
 
 # YouTube video
 
-Part 1 - Front End Design
+Front End Design
 
 <div align=center>
  <a href="https://www.youtube.com/watch?v=Wgah693r-As"><img src="previewYT.JPG">
