@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:mqtt_dibop/controller/user.dart';
+import 'package:mqtt_dibop/model/model.dart';
+import 'package:redux/redux.dart';
 import 'widgets/widget_utilities.dart';
 import 'package:sizer/sizer.dart';
 import 'package:mqtt_dibop/theme.dart';
@@ -13,7 +17,12 @@ class Menu extends StatefulWidget {
 class _MenuState extends State<Menu> {
   @override
   Widget build(BuildContext context) {
-    return MainScaffold(menu(), "Welcome, UserName");
+    return StoreConnector<AppState, _ViewModel>(
+        converter: (Store<AppState> store) => _ViewModel.create(store),
+        builder: (BuildContext context, _ViewModel viewModel) {
+          String userName = viewModel.user!.name;
+          return MainScaffold(menu(), "Welcome, " + userName);
+        });
   }
 
   Widget menu() {
@@ -109,6 +118,20 @@ class _MenuState extends State<Menu> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ViewModel {
+  final User? user;
+
+  _ViewModel({
+    required this.user,
+  });
+
+  factory _ViewModel.create(Store<AppState> store) {
+    return _ViewModel(
+      user: store.state.user,
     );
   }
 }

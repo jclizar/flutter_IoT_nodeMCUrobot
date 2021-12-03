@@ -86,17 +86,12 @@ class _SubscribeListState extends State<SubscribeList> {
       created: data['created_at'],
     );
 
-    String publishStatus =
-        subscriptionItem.publishId.isNotEmpty ? "(SEND)" : "(ERROR)";
-
-    String title = "${subscriptionItem.getName()} $publishStatus";
-
     return Card(
       elevation: 1,
       shadowColor: Theme.of(context).colorScheme.blue,
       child: ListTile(
         title: Text(
-          title,
+          subscriptionItem.getName(),
           style: TextStyle(fontSize: 10.sp),
         ),
 
@@ -120,83 +115,83 @@ class _SubscribeListState extends State<SubscribeList> {
   Widget build(BuildContext context) {
     final Color titlecolor = Theme.of(context).colorScheme.blue;
 
-    return Container(
-      padding: EdgeInsets.all(13.w),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              title(
-                'Lost Messages',
-                titleColo: titlecolor,
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  margin: EdgeInsets.only(bottom: 4.h),
-                  child: Text(
-                    '0',
-                    style: TextStyle(fontSize: 10.sp),
+    return StreamBuilder<QuerySnapshot>(
+      //fonte de dados (coleção)
+      stream: subscribeList.snapshots(),
+      //exibir os dados retornados
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            return const Center(
+              child: Text('Não foi possível conectar ao Firebase'),
+            );
+          case ConnectionState.waiting:
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          default:
+            final dados = snapshot.requireData.docs.toList();
+            dados.sort(
+                (a, b) => a['created_at'].compareTo(b['created_at']) * -1);
+            return Container(
+              padding: EdgeInsets.all(13.w),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      title(
+                        'Lost Messages',
+                        titleColo: titlecolor,
+                      ),
+                    ],
                   ),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              title(
-                'Subscribe History',
-                titleColo: titlecolor,
-              ),
-            ],
-          ),
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              //fonte de dados (coleção)
-              stream: subscribeList.snapshots(),
-              //exibir os dados retornados
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.none:
-                    return const Center(
-                      child: Text('Não foi possível conectar ao Firebase'),
-                    );
-                  case ConnectionState.waiting:
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  default:
-                    final dados = snapshot.requireData.docs.toList();
-                    dados.sort((a, b) =>
-                        a['created_at'].compareTo(b['created_at']) * -1);
-                    return ListView.builder(
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          margin: EdgeInsets.only(bottom: 4.h),
+                          child: Text(
+                            dados.length.toString(),
+                            style: TextStyle(fontSize: 10.sp),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      title(
+                        'Subscribe History',
+                        titleColo: titlecolor,
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: ListView.builder(
                       itemCount: dados.length,
                       itemBuilder: (context, index) {
                         return itemLista(dados[index]);
                       },
-                    );
-                }
-              },
-            ),
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 14.w),
-                  child: botao(
-                    'clear',
-                    removeItemfromPublishList,
+                    ),
                   ),
-                ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 14.w),
+                          child: botao(
+                            'clear',
+                            removeItemfromPublishList,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
-        ],
-      ),
+            );
+        }
+      },
     );
   }
 }

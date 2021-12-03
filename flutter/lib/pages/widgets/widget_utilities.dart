@@ -34,6 +34,7 @@ Widget inputText(
   Color borderColor = Colors.white,
   String? Function(String?)? validator,
   bool isPassword = false,
+  bool enabled = true,
 }) {
   return Expanded(
     child: Container(
@@ -85,6 +86,7 @@ Widget inputText(
         obscureText: isPassword,
         enableSuggestions: !isPassword,
         autocorrect: !isPassword,
+        enabled: enabled,
       ),
     ),
   );

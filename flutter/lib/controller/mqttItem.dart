@@ -36,10 +36,10 @@ class MqttItem {
     new Exception('$this.runtimeType need to implement getMapValues');
   }
 
-  static String? getMovementName(int value) {
+  static String? getMovementName(int choseValue) {
     String? name;
     _movements.forEach((key, value) {
-      if (value == value) {
+      if (choseValue == value) {
         name = key;
       }
     });
